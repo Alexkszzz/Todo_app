@@ -6,6 +6,8 @@ import { nanoid } from "nanoid";
 
 function App(props) {
   const [tasks, setTasks] = useState(props.tasks);
+
+
   let taskCount = tasks.length;
 
   function addTask(task) {
@@ -18,6 +20,16 @@ function App(props) {
     const updatedTasks = tasks.map(task => {
       if (task.id === id) {
         task.completed = !task.completed;
+      }
+      return task;
+    })
+    setTasks(updatedTasks)
+  }
+
+  function editTask(id, newName) {
+    const updatedTasks = tasks.map(task => {
+      if (task.id === id) {
+        task.action = newName;
       }
       return task;
     })
@@ -38,7 +50,9 @@ function App(props) {
       key={task.id}
       toggleTaskCompleted={toggleTaskCompleted}
       deleteTask={deleteTask}
+      editTask={editTask}
     />)
+
   const buttonGroup = props.status.map(status =>
     <FilterButton status={status} />)
 
