@@ -4,10 +4,17 @@ import FilterButton from "./components/FilterButton";
 import React, { useState } from "react";
 import { nanoid } from "nanoid";
 
+
+const FILTER_MAP = {
+  All: () => true,
+  Active: task => !task.completed,
+  Completed: task => task.completed
+}
+const FILTER_STATUS = Object.keys(FILTER_MAP);
+
 function App(props) {
   const [tasks, setTasks] = useState(props.tasks);
-
-
+  const [filter, setFilter] = useState("All");
   let taskCount = tasks.length;
 
   function addTask(task) {
@@ -42,7 +49,7 @@ function App(props) {
     taskCount = updatedTasks.length;
   }
 
-  const taskList = tasks.map(task =>
+  const taskList = tasks.filter(FILTER_MAP[filter]).map(task =>
     <Todo
       action={task.action}
       completed={task.completed}
@@ -53,15 +60,20 @@ function App(props) {
       editTask={editTask}
     />)
 
-  const buttonGroup = props.status.map(status =>
-    <FilterButton status={status} />)
+  const filterList = FILTER_STATUS.map(status =>
+    <FilterButton
+      key={status}
+      status={status}
+      is_pressed={status === filter}
+      setFilter={setFilter}
+    />)
 
   return (
     <div className="todoApp">
       <h1>Todo App</h1>
       <Form addTask={addTask} />
       <div className="filters btn-group">
-        {buttonGroup}
+        {filterList}
       </div>
       <h2 id="list-heading">
         {taskCount} tasks remaining
